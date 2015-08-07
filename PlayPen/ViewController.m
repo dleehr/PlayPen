@@ -33,6 +33,7 @@
     // Do any additional setup after loading the view, typically from a nib.
     self.view.backgroundColor = [UIColor whiteColor];
     self.label = [[UILabel alloc] initWithFrame:self.view.bounds];
+    self.label.textAlignment = NSTextAlignmentCenter;
     self.label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.label];
     self.cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)];
@@ -87,11 +88,10 @@
 
     NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
         for (NSUInteger i=0; i<10; i++) {
+            sleep(1);
             if (progress.isCancelled) {
                 return;
             }
-            NSLog(@"Sleeping..");
-            sleep(1);
             progress.completedUnitCount++;
         }
     }];
