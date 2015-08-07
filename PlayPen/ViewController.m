@@ -72,7 +72,6 @@
 - (void)cancel:(id)sender {
     // cancel the thing
     [self.progress cancel];
-    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -81,18 +80,20 @@
 }
 
 - (void)performTaskWithCompletionBlock:(dispatch_block_t)completionBlock {
-    // This needs to happen before the other progress resigns
-    NSProgress *progress = [NSProgress progressWithTotalUnitCount:10];
-    progress.cancellable = YES;
-    progress.pausable = NO;
-
+    // getting progress needs to happen on the same thread
+    NSProgress *taskProgress = [NSProgress progressWithTotalUnitCount:-1];
+    taskProgress.cancellable = YES;
+    taskProgress.pausable = NO;
     NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-        for (NSUInteger i=0; i<10; i++) {
-            sleep(1);
-            if (progress.isCancelled) {
+        // This should be on a different queue
+        // update the total unit count
+        taskProgress.totalUnitCount = 100;
+        for (NSUInteger i=0; i<100; i++) {
+            usleep(USEC_PER_SEC / 10);
+            if (taskProgress.isCancelled) {
                 return;
             }
-            progress.completedUnitCount++;
+            taskProgress.completedUnitCount = i+1;
         }
     }];
     operation.completionBlock = ^{
