@@ -35,6 +35,7 @@
     self.label = [[UILabel alloc] initWithFrame:self.view.bounds];
     self.label.textAlignment = NSTextAlignmentCenter;
     self.label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.label.numberOfLines = 0;
     [self.view addSubview:self.label];
     self.cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)];
     self.startButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(start:)];
@@ -47,7 +48,7 @@
     }
     self.navigationItem.rightBarButtonItem = self.cancelButton;
     // start the thing
-    NSProgress *progress = [NSProgress progressWithTotalUnitCount:1];
+    NSProgress *progress = [NSProgress progressWithTotalUnitCount:2];
     progress.cancellationHandler = ^{
         dispatch_async(dispatch_get_main_queue(), ^{
             self.navigationItem.rightBarButtonItem = self.startButton;
@@ -84,10 +85,14 @@
     NSProgress *taskProgress = [NSProgress progressWithTotalUnitCount:-1];
     taskProgress.cancellable = YES;
     taskProgress.pausable = NO;
+    taskProgress.totalUnitCount = 100;
+    taskProgress.kind = NSProgressKindFile;
+    [taskProgress setUserInfoObject:@(100) forKey:NSProgressFileTotalCountKey];
+    [taskProgress setUserInfoObject:NSProgressFileOperationKindReceiving forKey:NSProgressFileOperationKindKey];
     NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+        [taskProgress becomeCurrentWithPendingUnitCount:1];
         // This should be on a different queue
         // update the total unit count
-        taskProgress.totalUnitCount = 100;
         for (NSUInteger i=0; i<100; i++) {
             usleep(USEC_PER_SEC / 10);
             if (taskProgress.isCancelled) {
@@ -95,6 +100,7 @@
             }
             taskProgress.completedUnitCount = i+1;
         }
+        [taskProgress resignCurrent];
     }];
     operation.completionBlock = ^{
         dispatch_async(dispatch_get_main_queue(), completionBlock);
@@ -106,7 +112,9 @@
 # pragma mark - kvo
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    NSString *text = [object localizedDescription];
+    NSProgress *progress = object;
+    NSLog(@"Progress: %@", progress);
+    NSString *text = [NSString stringWithFormat:@"%@\n%@", [object localizedDescription], [object localizedAdditionalDescription]];
     dispatch_async(dispatch_get_main_queue(), ^{
         self.label.text = text;
     });
