@@ -55,14 +55,14 @@
     };
     self.progress = progress;
     [progress addObserver:self
-               forKeyPath:@"fractionCompleted"
+               forKeyPath:NSStringFromSelector(@selector(localizedDescription))
                   options:NSKeyValueObservingOptionNew
                   context:NULL];
     [progress becomeCurrentWithPendingUnitCount:1];
     // start the task
     [self performTaskWithCompletionBlock:^{
         [progress removeObserver:self
-                      forKeyPath:@"fractionCompleted"
+                      forKeyPath:NSStringFromSelector(@selector(localizedDescription))
                          context:NULL];
         self.progress = nil;
     }];
