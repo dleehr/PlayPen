@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "ProgressViewController.h"
 
 @interface ViewController ()
 
@@ -15,6 +16,7 @@
 @property (nonatomic, strong) UIBarButtonItem *startButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelButton;
 @property (nonatomic, strong) NSProgress *progress;
+@property (nonatomic, strong) ProgressViewController *progressViewController;
 
 @end
 
@@ -48,31 +50,47 @@
     }
     self.navigationItem.rightBarButtonItem = self.cancelButton;
     // start the thing
-    NSProgress *progress = [NSProgress progressWithTotalUnitCount:2];
-    progress.cancellationHandler = ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.navigationItem.rightBarButtonItem = self.startButton;
-        });
-    };
+    NSProgress *progress = [NSProgress progressWithTotalUnitCount:1];
     self.progress = progress;
     [progress addObserver:self
                forKeyPath:NSStringFromSelector(@selector(localizedDescription))
                   options:NSKeyValueObservingOptionNew
                   context:NULL];
     [progress becomeCurrentWithPendingUnitCount:1];
+    [self showProgress];
     // start the task
     [self performTaskWithCompletionBlock:^{
-        [progress removeObserver:self
-                      forKeyPath:NSStringFromSelector(@selector(localizedDescription))
-                         context:NULL];
-        self.progress = nil;
+        [self done:progress.cancelled];
     }];
     [progress resignCurrent];
+}
+
+- (void)done:(BOOL)cancelled {
+    self.navigationItem.rightBarButtonItem = self.startButton;
+    if (self.progressViewController) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+    [self.progress removeObserver:self
+                       forKeyPath:NSStringFromSelector(@selector(localizedDescription))
+                          context:NULL];
+    self.progress = nil;
 }
 
 - (void)cancel:(id)sender {
     // cancel the thing
     [self.progress cancel];
+}
+
+- (void)showProgress {
+    ProgressViewController *progressViewController = [ProgressViewController progressViewControllerWithTitle:@"Cloning DLSFTPClient"];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel"
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction *action) {
+                                                             [self cancel:nil];
+                                                         }];
+    [progressViewController addAction:cancelAction];
+    self.progressViewController = progressViewController;
+    [self presentViewController:progressViewController animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -96,6 +114,7 @@
         for (NSUInteger i=0; i<100; i++) {
             usleep(USEC_PER_SEC / 10);
             if (taskProgress.isCancelled) {
+                [taskProgress resignCurrent];
                 return;
             }
             taskProgress.completedUnitCount = i+1;
@@ -117,6 +136,7 @@
     NSString *text = [NSString stringWithFormat:@"%@\n%@", [object localizedDescription], [object localizedAdditionalDescription]];
     dispatch_async(dispatch_get_main_queue(), ^{
         self.label.text = text;
+        [self.progressViewController setProgress:progress.fractionCompleted];
     });
 }
 

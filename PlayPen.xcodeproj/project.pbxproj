@@ -13,6 +13,7 @@
 		6049F9ED1B743894008409D3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6049F9EC1B743894008409D3 /* Images.xcassets */; };
 		6049F9F01B743894008409D3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6049F9EE1B743894008409D3 /* LaunchScreen.xib */; };
 		6049F9FC1B743894008409D3 /* PlayPenTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6049F9FB1B743894008409D3 /* PlayPenTests.m */; };
+		60E9E1E11B7680EE008D1E38 /* ProgressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E9E1E01B7680EE008D1E38 /* ProgressViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +39,8 @@
 		6049F9F51B743894008409D3 /* PlayPenTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlayPenTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6049F9FA1B743894008409D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6049F9FB1B743894008409D3 /* PlayPenTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayPenTests.m; sourceTree = "<group>"; };
+		60E9E1DF1B7680EE008D1E38 /* ProgressViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressViewController.h; sourceTree = "<group>"; };
+		60E9E1E01B7680EE008D1E38 /* ProgressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +89,8 @@
 				6049F9EC1B743894008409D3 /* Images.xcassets */,
 				6049F9EE1B743894008409D3 /* LaunchScreen.xib */,
 				6049F9DF1B743894008409D3 /* Supporting Files */,
+				60E9E1DF1B7680EE008D1E38 /* ProgressViewController.h */,
+				60E9E1E01B7680EE008D1E38 /* ProgressViewController.m */,
 			);
 			path = PlayPen;
 			sourceTree = "<group>";
@@ -218,6 +223,7 @@
 				6049F9E81B743894008409D3 /* ViewController.m in Sources */,
 				6049F9E51B743894008409D3 /* AppDelegate.m in Sources */,
 				6049F9E21B743894008409D3 /* main.m in Sources */,
+				60E9E1E11B7680EE008D1E38 /* ProgressViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,6 +412,7 @@
 				6049FA011B743894008409D3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6049FA021B743894008409D3 /* Build configuration list for PBXNativeTarget "PlayPenTests" */ = {
 			isa = XCConfigurationList;
@@ -414,6 +421,7 @@
 				6049FA041B743894008409D3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
